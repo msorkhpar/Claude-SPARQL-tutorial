@@ -1,0 +1,25 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex: <http://example.org/> .
+
+ex:Book1 rdf:type ex:Book ;
+    ex:title "The Great Gatsby" ;
+    ex:author ex:Author1 ;
+    ex:publicationDate "1925-04-10"^^xsd:date ;
+    ex:pageCount 180 .
+
+ex:Author1 rdf:type ex:Author ;
+    ex:name "F. Scott Fitzgerald" ;
+    ex:birthDate "1896-09-24"^^xsd:date ;
+    ex:nationality "American" .
+
+ex:Book2 rdf:type ex:Book ;
+    ex:title "To Kill a Mockingbird" ;
+    ex:author ex:Author2 ;
+    ex:publicationDate "1960-07-11"^^xsd:date ;
+    ex:pageCount 281 .
+
+ex:Author2 rdf:type ex:Author ;
+    ex:name "Harper Lee" ;
+    ex:birthDate "1926-04-28"^^xsd:date ;
+    ex:nationality "American" .

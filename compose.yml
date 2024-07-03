@@ -1,0 +1,62 @@
+services:
+  fuseki:
+    image: stain/jena-fuseki:4.8.0
+    hostname: fuseki
+    container_name: fuseki
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4GB
+        reservations:
+          cpus: "1"
+          memory: 2GB
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3030/$/ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    env_file:
+      - ./configs/fuseki.env
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./fuseki-data:/fuseki
+    networks:
+      - graph-network
+
+  jupyter-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jupyter
+    hostname: jupyter
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1GB
+        reservations:
+          cpus: "1"
+          memory: 1GB
+    env_file:
+      - ./configs/jupyter.env
+    restart: unless-stopped
+    entrypoint: [ "/bin/bash", "/jupyter-entrypoint.sh" ]
+    depends_on:
+      fuseki:
+        condition: service_healthy
+    ports:
+      - '8888:8888'
+    volumes:
+      - ./src:/home/jovyan/work/
+      - ./configs/jupyter-entrypoint.sh:/jupyter-entrypoint.sh
+      - ./configs/fuseki.env:/tmp/fuseki.env
+      - ./configs/neo4j.env:/tmp/neo4j.env
+    networks:
+      - graph-network
+
+networks:
+  graph-network:
